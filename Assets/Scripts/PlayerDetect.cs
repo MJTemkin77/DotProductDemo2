@@ -9,65 +9,22 @@ using UnityEngine.InputSystem;
 
 public class PlayerDetect : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject Barriers;
+   
     [SerializeField]
     private float radius = .5f;
     [SerializeField]
     private LayerMask WallLayer;
 
-    List<GameObject> Walls = new List<GameObject>();
+   
 
     InputAction detectAction, moveAction;
     void Start()
     {
-        int cnt = GetWallsInBarrier();
-        Debug.Log($"Child count = {cnt}");
         detectAction = InputSystem.actions.FindAction("Click");
         moveAction = InputSystem.actions.FindAction("Move");
     }
 
-    /// <summary>
-    /// TODO: Add each Wall in the Barriers to a List of GameObject named Walls.
-    /// Walls is a class variable.
-    /// The method will return the number of GameObjects in the Walls List.
-
-    /// DO NOT USE Constants. Do NOT Assume that the return value is 4.
-    /// The Test program can use data that will add or subtract a wall from 
-    /// the barrier.
-    /// </summary>
-    private int GetWallsInBarrier()
-    {
-        GameObject[] tagWalls =
-        GameObject.FindGameObjectsWithTag("Walls");
-
-        foreach (GameObject tagWall in tagWalls)
-        {
-            Walls.Add(tagWall);
-        }
-
-/*
-        for (int i = 0; i < Barriers.transform.childCount; i++)
-        {
-
-            if (Barriers.transform.GetChild(i) != null)
-            {
-                Transform t = Barriers.transform.GetChild(i);
-                if (t.childCount > 0)
-                {
-                    for (int j = 0; j < t.childCount; j++)
-                        Walls.Add(t.GetChild(j).gameObject);
-                }
-                else
-                {
-                    Walls.Add(t.gameObject);
-                }
-
-            }
-        }
-*/
-        return Walls.Count;
-    }
+   
 
     // Update is called once per frame
     void Update()
@@ -75,7 +32,7 @@ public class PlayerDetect : MonoBehaviour
         if (detectAction.IsPressed())
         {
             ClearLog();
-            Collider[] colliders = FindCollisionsWithWalls(Walls, radius);
+            Collider[] colliders = FindCollisionsWithWalls(radius);
             ReportColliders(colliders);
 
 
@@ -107,9 +64,8 @@ public class PlayerDetect : MonoBehaviour
     /// Get the collection of collisions with GameObjects that are in the Wall layer.
     /// NOTE: The term layer was used, not tag.
     /// </summary>
-    /// <param name="walls">The list of GameObjects that are walls.</param>
     /// <param name="r">The radius</param>
-    private Collider[] FindCollisionsWithWalls(List<GameObject> walls, float r)
+    private Collider[] FindCollisionsWithWalls(float r)
     {
         int layerMask = WallLayer.value;
         Collider[] colliders =
